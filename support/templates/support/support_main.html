@@ -1,0 +1,65 @@
+{% extends 'support/base_support.html' %}
+
+{% block content %}
+    <form class="mt-4" method="get">
+        {% for field in filter.form %}
+            <div class="col-md-12 ps-4 pe-4">
+                <label for="{{ field.id_for_label }}">{{ field.label }} </label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-search"></i></span>
+                    {{ field }}
+                    <button style="border-color: orange" class="btn btn-primary" type="submit">Применить</button>
+                </div>
+
+                <div class="invalid-feedback">
+                    {{ field.errors }}
+                </div>
+            </div>
+            <div style="justify-content: start;" class="d-grid gap-2 d-md-flex align-items-center ps-3 mt-2">
+                <a class="link-warning text-center pt-1 ms-2" href="{% url 'support-main' %}">Очистить <i
+                        class="fa-solid fa-filter-circle-xmark bg-transparent"></i></a>
+            </div>
+        {% endfor %}
+    </form>
+    <div class="container mt-4 ps-4 pe-4 {% if amount_of_pages > 1 %}mb-5{% endif %}">
+        <div class="row justify-content-center">
+            {% if not topic_page_obj %}
+                <div class="d-flex align-items-center flex-column">
+                    <span class="mb-2 text-muted text-uppercase text-center">по вашему запросу ничего не найдено:</span>
+                    <ul>
+                        <li>Попробуйте изменить запрос</li>
+                        <li>Проверьте, нет ли ошибок</li>
+                    </ul>
+                </div>
+            {% endif %}
+            {% for topic in topic_page_obj %}
+                <div class="col-md-3 col-4 text-center mb-3">
+                    <article class="w-100 h-100">
+                        <a id="{{ topic.slug }}" href="{% url 'topic' topic.slug %}"
+                           class="trigger w-100 h-100 btn d-flex justify-content-center align-items-center">{{ topic.topic }}</a>
+                    </article>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% include 'questionnaire/pagination.html' with page_obj=topic_page_obj %}
+    <script>
+        var topics = document.querySelectorAll('.trigger');
+
+
+        window.onload = function () {
+            if (window.innerWidth <= 540) {
+                for (let i = 0; i < topics.length; i++) {
+                    {#console.log(topics[i].textContent);#}
+                    topics[i].textContent = topics[i].textContent.substring(0, 20);
+                }
+            }
+        };
+    </script>
+    <script>
+        const id_title_and_description = document.querySelectorAll('#id_title_and_description')
+        for (let i = 0; i < id_title_and_description.length; i++) {
+            id_title_and_description[i].setAttribute('minlength', '3')
+        }
+    </script>
+{% endblock %}

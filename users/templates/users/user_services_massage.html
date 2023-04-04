@@ -1,0 +1,9 @@
+{% extends 'users/base_profile.html' %}
+
+{% block title %}
+массажистка
+{% endblock %}
+
+{% block profile_content %}
+{% include 'users/service_info_table.html' with services_type=services_massage service_count=service_massage_count service_type_name="массажисток" %}
+{% endblock %}

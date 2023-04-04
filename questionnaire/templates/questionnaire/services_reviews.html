@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row flex m-xl-5 justify-content-center">
+    <div style="background: rgba(211,211,211,0.17)" class="col-md-8 m-3">
+        <div class="flex mb-2 mt-5"><p class="h3 underscore">Отзывы</p></div>
+        <div class="row">
+            {% if reviews %}
+                {% for review in reviews %}
+                    <div class="flex align-items-center">
+                        <p class="h5"><strong>{{ review.user }}</strong></p>
+                        <p class="ms-3">{{ review.date|date:"d/m/y, H:m" }}</p>
+                    </div>
+                    {% if review.original_photo %}
+                        <p class="h5"><small class="text-muted">Фото соответствует</small></p>
+                    {% endif %}
+                    <div class="flex">
+                        <p>{{ review.stars }}</p>
+                        <p class="ms-3">{{ review.message }}</p>
+                    </div>
+                    <div class="flex justify-content-center">
+                        <hr class="w-50">
+                    </div>
+                {% endfor %}
+            {% else %}
+                Отзывов пока нет
+            {% endif %}
+        </div>
+    </div>
+    </div>
+{% endblock %}

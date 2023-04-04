@@ -1,0 +1,107 @@
+{% extends 'info_page.html' %}
+
+{% block text_h1 %}
+    Создать анкету
+{% endblock %}
+
+{% block style %}
+    <style>
+        .section-create {
+            background: #fcfcfa;
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 5px 0.7px rgb(0 0 0/8%);
+        }
+    </style>
+{% endblock %}
+
+{% block form %}
+    <form enctype='multipart/form-data' method="post" action="{% url 'create-service' %}">
+        {% csrf_token %}
+        {{ form.errors }}
+        <div class="section-create">
+            {% for field in form %}
+                {% if field.name == "location" %}
+                    </div>
+                    <div class="section-create">
+                {% endif %}
+            {% if field.name == "price_half_hour" %}
+                </div>
+                <div class="section-create">
+            {% endif %}
+
+            {% if field.name == "description" %}
+                </div>
+                <div class="section-create">
+                    {% if field.errors %}
+                        <div class="alert alert-danger">{{ field.errors }}</div>
+                    {% endif %}
+                    <p class="h6">ОПИСАНИЕ О СЕБЕ И О СВОИХ УСЛУГАХ:</p>
+                    <div class="alert alert-warning text-start">
+                        1. Поле "О себе" должно быть максимально подробным <strong>(не менее 200 символов)</strong>.
+                        Подробное,
+                        интересное, смысловое описание значительно увеличивает эффективность вашей анкеты.
+                        <br>
+                        2. Запрещено указывать любые контактные данные: <strong>телефон, telegram, instagram, емайл и
+                        пр.!</strong>
+                    </div>
+                    {{ field }}
+                </div>
+            {% elif field.name == "additions" %}
+                <div class="section-create">
+                    {% if field.errors %}
+                        <div class="alert alert-danger">{{ field.errors }}</div>
+                    {% endif %}
+                    <p class="h5">Услуги:</p>
+                    {% for addition in main_additions %}
+                        <div class="flex mb-3 justify-content-around align-items-center">
+                            <div class="text-center">
+                                <input type="checkbox" class="form-check-input" name="additions_{{ addition.id }}"
+                                       id="id_additions_{{ addition.id }}">
+                                <label class="form-check-label"
+                                       for="id_additions_{{ addition.id }}">{{ addition }}</label>
+                            </div>
+                            <div class="flex align-items-center">
+                                <label class="form-check-label me-2" for="id_price_{{ addition.id }}">Доплата:</label>
+                                <input style="width: 100px;" type="number" name="price_{{ addition.id }}"
+                                       class="form-control" id="id_price_{{ addition.id }}">
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="section-create">
+            {% elif field.name == "owner" %}
+                <div class="d-none">
+                    <select id="id_owner" name="owner" class="form-select">
+                        <option selected value="{{ user.id }}">{{ user }}</option>
+                    </select>
+                </div>
+            {% else %}
+                {% if field.errors %}
+                    <div class="alert alert-danger">{{ field.errors }}</div>
+                {% endif %}
+                <div class="flex {% if not field.help_text %}mb-3{% endif %} align-items-center w-75">
+                    <label style="width: 195px" class="me-2 text-start" for="{{ field.id_for_label }}">
+                        {{ field.label }}:
+                    </label>
+                    {{ field }}
+                </div>
+                {% if field.help_text %}
+                    <div class="mb-3" style="color: grey; font-size: 10px;">{{ field.help_text }}</div>
+                {% endif %}
+            {% endif %}
+            {% if field.name == "video" %}
+                <div class="mb-3">
+                    <label for="images" class="form-label">Фото:</label>
+                    <input class="form-control" type="file" name="images" id="images" multiple>
+                    <span class="form-text muted small">Чтобы прикрепить несколько файлов зажмите клавишу ctrl и выберите несколько изображений правой кнопкой мыши <br></span>
+                <span class="form-text muted small">Максимальный размер файла 2 Мб</span>
+                </div>
+                </div>
+            {% endif %}
+            {% endfor %}
+        <button type="submit" class="btn">Создать</button>
+    </form>
+{% endblock %}

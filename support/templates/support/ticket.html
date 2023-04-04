@@ -1,0 +1,27 @@
+{% extends 'support/base_support.html' %}
+
+{% block content %}
+    <div class="row mt-5 rounded m-0">
+        <div class="col-3"></div>
+        <div class="col-6 mb-3">
+            <div class="text-muted text-center mb-1">Ваш вопрос:</div>
+            <div class="form-control text-center">{{ ticket.question }}</div>
+        </div>
+        <div class="col-3"></div>
+        <div class="col-4">
+        </div>
+        <div class="col-4">
+            <hr>
+        </div>
+        <div class="col-4"></div>
+        <div class="col-3"></div>
+        <div class="col-6">
+            {% if ticket.answer %}
+                <div class="text-muted text-center mb-1">Ответ:</div>
+                <div class="form-control text-center">{{ ticket.answer }}</div>
+            {% else %}
+                <p class="text-center text-muted">Ваш запрос отправлен на рассмотрение. Мы скоро ответим вам.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

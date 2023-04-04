@@ -1,0 +1,5 @@
+{% extends 'users/base_profile.html' %}
+
+{% block profile_content %}
+{% include 'users/service_info_table.html' with services_type=services_men service_count=service_men_count service_type_name="парней" %}
+{% endblock %}

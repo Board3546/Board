@@ -1,0 +1,35 @@
+{% extends 'support/base_support.html' %}
+
+{% block content %}
+    <ul class="list-group list-group-flush ps-2 mt-3 {% if amount_of_pages > 1 %}mb-5{% endif %}">
+        {% if not ticket_page_obj %}
+            <p class="text-center text-muted mt-3">Здесь будут отражены ваши обращения. Чтобы создать перейдите по <a
+                    style="text-decoration: underline" class="link-warning" href="{% url 'support-create-ticket' %}">ссылке</a>
+            </p>
+        {% endif %}
+        {% for ticket in ticket_page_obj %}
+            <li style="min-height: 100px; background: rgba(187,187,187,0.5);"
+                class="list-group-item d-flex justify-content-between align-items-center rounded mb-2 me-2">
+                <div style="background: transparent; word-break: break-all;" class="ms-2 me-auto">
+                    <div style="background: transparent;"
+                         class="fw-bold mb-2">{{ ticket.question|truncatechars:70 }}</div>
+                    <p class="text-muted mb-0">{% if ticket.answer %}{{ ticket.answer|truncatechars:90 }}{% else %}
+                        <small style="color: #C0AC83;">Ваш запрос отправлен на рассмотрение. Мы скоро ответим
+                            вам.</small>{% endif %}</p>
+                </div>
+                <span style="color: {% if ticket.status == 'O' %}#C0AC83{% else %}forestgreen{% endif %} "
+                      class="badge rounded-pill">
+                    {% if ticket.status == 'O' %}
+                        Открыт
+                    {% else %}
+                        Закрыт
+                    {% endif %}
+
+        </span>
+                <a href="{{ ticket.get_absolute_url }}" class="stretched-link"></a>
+            </li>
+        {% endfor %}
+    </ul>
+    {% include 'questionnaire/pagination.html' with page_obj=ticket_page_obj %}
+
+{% endblock %}

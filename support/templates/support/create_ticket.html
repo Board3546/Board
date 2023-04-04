@@ -1,0 +1,42 @@
+{% extends 'support/base_support.html' %}
+
+{% block content %}
+    <div class="col-3 mt-3"></div>
+    <div class="col-6 mt-3">
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                {{ form.errors }}
+                {% if field.name == 'user' %}
+                    <div class="d-none">
+                        <select name="user" id="id_user">
+                            <option value="{{ user.id }}" selected></option>
+                        </select>
+                    </div>
+                {% elif field.name == 'status' %}
+                    <div class="d-none">
+                        <select name="status" id="id_status">
+                            <option value="O" selected></option>
+                        </select>
+                    </div>
+                {% else %}
+                    <label class="mt-3" for="{{ field.id_for_label }}">Опишите проблему:</label>
+                    {{ field }}
+                    <div class="invalid-feedback">
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button onclick="" class="btn btn-primary md-2 mt-3" type="submit">
+                    Отправить
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="col-3 mt-3"></div>
+    <script>
+        var rows = document.querySelector('#id_question');
+        rows.setAttribute('rows', '10');
+    </script>
+{% endblock %}

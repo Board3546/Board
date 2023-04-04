@@ -1,0 +1,5 @@
+{% extends 'users/base_profile.html' %}
+
+{% block profile_content %}
+{% include 'users/service_info_table.html' with services_type=services_company service_count=service_company_count service_type_name="фирм досуга" %}
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <style>
+        .card .card-img-overlay {
+            transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+            background: #f1f9ff;
+            background: linear-gradient(180deg, rgba(161, 178, 190, 0.06) 60%, rgba(43, 45, 47, 0.91) 100%);
+        }
+
+        .card {
+            border: none;
+            transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+            overflow: hidden;
+            min-height: 450px;
+            box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                min-height: 450px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .card {
+                min-height: 500px;
+            }
+        }
+
+        .card.card-has-bg {
+            transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+            background-size: 100%;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+
+        .card .card-footer {
+            background: none;
+            border-top: none;
+        }
+
+        .card .card-footer .media img {
+            border: solid 3px rgba(255, 255, 255, 0.3);
+        }
+
+        .card .card-meta {
+            color: #26BD75;
+        }
+
+        .card .card-body {
+            transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .card:hover {
+            cursor: pointer;
+        }
+    </style>
+    <div class="row m-auto justify-content-center m-xl-5">
+    <div class="col-12"><button id="update" class="btn mb-3">Обновить</button></div>
+    <div class="col-12 mb-3"><p class="h1 text-center">Избранные анкеты</p></div>
+    <script>
+        document.getElementById("update").addEventListener("click", () => {
+            var value = localStorage.getItem("favorites");
+            document.cookie = "key=" + value + "; path=/";
+            window.location.reload()
+        });
+    </script>
+        {% for service in services %}
+            <div class="col-md-6 col-xl-4 pb-4">
+
+                <div class="card text-white card-has-bg click-col rounded-0"
+                     style="background-image:url('/media/{{ service.images.all|first }}')">
+                    <img class="card-img d-none" src="https://source.unsplash.com/600x900/?tech,street"
+                         alt="Goverment Lorem Ipsum Sit Amet Consectetur dipisi?">
+                    <div class="card-img-overlay d-flex flex-column">
+                        <div class="card-body">
+                        </div>
+                        <div class="card-footer">
+                            <p class="h4">{{ service.title }}</p>
+
+                            <div class="flex justify-content-between">
+                                <div style="border: 2px #bbbbbb">
+                                    за час
+                                    <br>
+                                    {% if service.price_one_hour %}
+                                        {{ service.price_one_hour }}
+                                    {% else %}
+                                        <span><strong>&#8211;</strong></span>
+                                    {% endif %}
+                                </div>
+                                <div style="border: 2px #bbbbbb">
+                                    за два
+                                    <br>
+                                    {% if service.price_two_hours %}
+                                        {{ service.price_two_hours }}
+                                    {% else %}
+                                        <span><strong>&#8211;</strong></span>
+                                    {% endif %}
+                                </div>
+                                <div style="border: 2px #bbbbbb">
+                                    за ночь
+                                    <br>
+                                    {% if service.price_full %}
+                                        {{ service.price_full }}
+                                    {% else %}
+                                        <span><strong>&#8211;</strong></span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <p class="mt-3">{{ service.location }} * {{ service.age }} лет</p>
+                        </div>
+                        <a href="{{ service.get_absolute_url }}" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

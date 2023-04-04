@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Анкеты
+{% endblock %}
+
+{% block content %}
+    <style>
+        .card .card-img-overlay {
+            transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+            background: #f1f9ff;
+            background: linear-gradient(180deg, rgba(161, 178, 190, 0.06) 60%, rgba(43, 45, 47, 0.91) 100%);
+        }
+
+        .card {
+            border: none;
+            transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+            overflow: hidden;
+            min-height: 450px;
+            box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                min-height: 450px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .card {
+                min-height: 500px;
+            }
+        }
+
+        .card.card-has-bg {
+            transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+            background-size: 100%;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+
+        .card .card-footer {
+            background: none;
+            border-top: none;
+        }
+
+        .card .card-footer .media img {
+            border: solid 3px rgba(255, 255, 255, 0.3);
+        }
+
+        .card .card-meta {
+            color: #26BD75;
+        }
+
+        .card .card-body {
+            transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .card:hover {
+            cursor: pointer;
+        }
+    </style>
+    <div class="row m-auto justify-content-center m-xl-5">
+        <div class="col-12 col-xl-9">
+            <div class="row m-auto justify-content-center">
+                {% for service in services %}
+                    {% if service.subscription_active %}
+                        <div class="col-md-6 pb-4 position-relative">
+                            {% if service.waiting_call %}
+                            <div class="position-absolute top-0 end-0 mt-3" style="z-index: 100;">
+                                <img src="{% static 'img/telephone-call-thumbnail.png' %}" alt="waiting call" width="66"
+                                     height="66">
+                            </div>
+                            {% endif %}
+                            <div class="card text-white card-has-bg click-col rounded-0"
+                                 style="background-image:url('/media/{{ service.images.all|first }}')">
+                                <img class="card-img d-none" src="https://source.unsplash.com/600x900/?tech,street"
+                                     alt="Goverment Lorem Ipsum Sit Amet Consectetur dipisi?">
+                                <div class="card-img-overlay d-flex flex-column">
+                                    <div class="card-body">
+                                    </div>
+                                    <div class="card-footer">
+                                        <p class="h4">{{ service.title }}</p>
+
+                                        <div class="flex justify-content-between">
+                                            <div style="border: 2px #bbbbbb">
+                                                за час
+                                                <br>
+                                                {% if service.price_one_hour %}
+                                                    {{ service.price_one_hour }}
+                                                {% else %}
+                                                    <span><strong>&#8211;</strong></span>
+                                                {% endif %}
+                                            </div>
+                                            <div style="border: 2px #bbbbbb">
+                                                за два
+                                                <br>
+                                                {% if service.price_two_hours %}
+                                                    {{ service.price_two_hours }}
+                                                {% else %}
+                                                    <span><strong>&#8211;</strong></span>
+                                                {% endif %}
+                                            </div>
+                                            <div style="border: 2px #bbbbbb">
+                                                за ночь
+                                                <br>
+                                                {% if service.price_full %}
+                                                    {{ service.price_full }}
+                                                {% else %}
+                                                    <span><strong>&#8211;</strong></span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <p class="mt-3">{{ service.location }} * {{ service.age }} лет</p>
+                                    </div>
+                                    <a href="{{ service.get_absolute_url }}" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-xl-3 filter">
+            <div class="mb-3">
+                <button onclick="window.location.href='{% url 'services-filter' %}?confirmed=1'"
+                        class="menu__item form-control mb-2">
+                    Реальные фото
+                </button>
+                <button onclick="window.location.href='{% url 'services-filter' %}?price_half_hour__isnull=False'" class="menu__item form-control mb-2">
+                    Экспресс
+                </button>
+                <button onclick="window.location.href='{% url 'services-video' %}'"
+                        class="menu__item form-control mb-2">
+                    Есть видео
+                </button>
+                <button onclick="window.location.href='{% url 'services-filter' %}?waiting_call=1'" class="menu__item form-control mb-2">
+                    Ждут звонка
+                </button>
+                <button onclick="window.location.href='{% url 'services-new' %}'"
+                        class="menu__item form-control mb-3">
+                    Новенькие
+                </button>
+                <select id="id_location" class="form-select"
+                        onchange="window.location.href='{% url 'services-filter' %}?location=' + this.options[this.selectedIndex].value">
+                    <option value="">Выберите район</option>
+                    <option>Советский</option>
+                    <option>Приволжский</option>
+                    <option>Ново-Савиновский</option>
+                    <option>Московский</option>
+                    <option>Кировский</option>
+                    <option>Вахитовский</option>
+                    <option>Авиастроительный</option>
+                </select>
+            </div>
+            <p class="h4 mb-3">Ценность</p>
+            <div class="flex mb-3">
+                <div class="col-6 me-3">
+                    <!-- change onclick value to edit filter params -->
+                    <button onclick="window.location.href='{% url 'services-filter' %}?price_one_hour__lte=2000'"
+                            class="form-control mb-2">Дешёвые
+                    </button>
+                    <button onclick="window.location.href='{% url 'services-filter' %}?price_one_hour__lte=3000&price_one_hour__gte=2000'"
+                            class="form-control mb-2">2000-3000
+                    </button>
+                    <button onclick="window.location.href='{% url 'services-filter' %}?price_one_hour__lte=4000&price_one_hour__gte=3000'"
+                            class="form-control mb-2">3000-4000
+                    </button>
+                </div>
+                <div class="col-6">
+                    <!-- change onclick value to edit filter params -->
+                    <button onclick="window.location.href='{% url 'services-filter' %}?price_one_hour__lte=6000&price_one_hour__gte=4000'"
+                            class="form-control mb-2">4000-6000
+                    </button>
+                    <button onclick="window.location.href='{% url 'services-filter' %}?price_one_hour__lte=8000&price_one_hour__gte=6000'"
+                            class="form-control mb-2">6000-8000
+                    </button>
+                    <button onclick="window.location.href='{% url 'services-filter' %}?price_one_hour__gte=8000'"
+                            class="form-control mb-2">Элитные
+                    </button>
+                </div>
+            </div>
+            <p class="h4 mb-3">Возраст</p>
+            <div class="flex mb-3">
+                <div class="col-6 me-3">
+                    <!-- change onclick value to edit filter params -->
+                    <button onclick="window.location.href='{% url 'services-filter' %}?age__lte=20'"
+                            class="form-control mb-2">Молодые
+                    </button>
+                    <button onclick="window.location.href='{% url 'services-filter' %}?age__lte=25&age__gte=20'"
+                            class="form-control mb-2">20-25 лет
+                    </button>
+                    <button onclick="window.location.href='{% url 'services-filter' %}?age__lte=30&age__gte=25'"
+                            class="form-control mb-2">25-30 лет
+                    </button>
+                </div>
+                <div class="col-6">
+                    <!-- change onclick value to edit filter params -->
+                    <button onclick="window.location.href='{% url 'services-filter' %}?age__lte=35&age__gte=30'"
+                            class="form-control mb-2">30-35 лет
+                    </button>
+                    <button onclick="window.location.href='{% url 'services-filter' %}?age__lte=35&age__gte=40'"
+                            class="form-control mb-2">35-40 лет
+                    </button>
+                    <button onclick="window.location.href='{% url 'services-filter' %}?age__gte=40'"
+                            class="form-control mb-2">Зрелые
+                    </button>
+                </div>
+            </div>
+            <p class="h4 mb-3">Предпочтения</p>
+            {% for addition in additions %}
+                <button onclick="window.location.href='{% url 'services-filter' %}?additions__title=' + this.textContent"
+                        class="form-control mb-2">{{ addition.title }}
+                </button>
+            {% endfor %}
+
+            <p class="h4 mb-3">Телосложение</p>
+            <div class="flex mb-3">
+                <div class="col-6 me-3">
+                    <!-- change onclick value to edit filter params -->
+                    <button onclick="window.location.href='{% url 'services-filter' %}?appearance=' + this.textContent"
+                            class="form-control mb-2">Худая
+                    </button>
+                    <button onclick="window.location.href='{% url 'services-filter' %}?appearance=' + this.textContent"
+                            class="form-control mb-2">Стройная
+                    </button>
+                </div>
+                <div class="col-6">
+                    <!-- change onclick value to edit filter params -->
+                    <button onclick="window.location.href='{% url 'services-filter' %}?appearance=' + this.textContent"
+                            class="form-control mb-2">Спортивная
+                    </button>
+                    <button onclick="window.location.href='{% url 'services-filter' %}?appearance=' + this.textContent"
+                            class="form-control mb-2">Полная
+                    </button>
+                </div>
+            </div>
+            <p class="h4 mb-3">Цвет волос</p>
+            <div class="flex mb-3">
+                <div class="col-6 me-3">
+                    <!-- change onclick value to edit filter params -->
+                    <button onclick="window.location.href='{% url 'services-filter' %}?hair=' + this.textContent"
+                            class="form-control mb-2">Блондинка
+                    </button>
+                    <button onclick="window.location.href='{% url 'services-filter' %}?hair=' + this.textContent"
+                            class="form-control mb-2">Рыжая
+                    </button>
+                </div>
+                <div class="col-6">
+                    <!-- change onclick value to edit filter params -->
+                    <button onclick="window.location.href='{% url 'services-filter' %}?hair=' + this.textContent"
+                            class="form-control mb-2">Брюнетка
+                    </button>
+                    <button onclick="window.location.href='{% url 'services-filter' %}?hair=' + this.textContent"
+                            class="form-control mb-2">Шатенка
+                    </button>
+                </div>
+            </div>
+            <p class="h4 mb-3">Национальность</p>
+            <div class="flex mb-3">
+                <div class="col-6 me-3">
+                    <!-- change onclick value to edit filter params -->
+                    <button onclick="window.location.href='{% url 'services-filter' %}?nationality=' + this.textContent"
+                            class="form-control mb-2">Азиатка
+                    </button>
+                    <button onclick="window.location.href='{% url 'services-filter' %}?nationality=' + this.textContent"
+                            class="form-control mb-2">Негритянка
+                    </button>
+                </div>
+                <div class="col-6">
+                    <!-- change onclick value to edit filter params -->
+                    <button onclick="window.location.href='{% url 'services-filter' %}?nationality=' + this.textContent"
+                            class="form-control mb-2">Русская
+                    </button>
+                    <button onclick="window.location.href='{% url 'services-filter' %}?nationality=' + this.textContent"
+                            class="form-control mb-2">Украинка
+                    </button>
+                </div>
+            </div>
+            <p class="h4 mb-3">Грудь</p>
+            <div class="flex mb-3">
+                <button onclick="window.location.href='{% url 'services-filter' %}?size=' + this.textContent"
+                        class="form-control me-2 mb-2">1
+                </button>
+                <button onclick="window.location.href='{% url 'services-filter' %}?size=' + this.textContent"
+                        class="form-control me-2 mb-2">2
+                </button>
+                <button onclick="window.location.href='{% url 'services-filter' %}?size=' + this.textContent"
+                        class="form-control me-2 mb-2">3
+                </button>
+                <button onclick="window.location.href='{% url 'services-filter' %}?size=' + this.textContent"
+                        class="form-control me-2 mb-2">4
+                </button>
+                <button onclick="window.location.href='{% url 'services-filter' %}?size=' + this.textContent"
+                        class="form-control me-2 mb-2">5
+                </button>
+                <button onclick="window.location.href='{% url 'services-filter' %}?size=' + this.textContent"
+                        class="form-control me-2 mb-2">6
+                </button>
+                <button onclick="window.location.href='{% url 'services-filter' %}?size__gte=7'"
+                        class="form-control me-2 mb-2">7+
+                </button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+{% block comment %}
+    {#    old design#}
+    <div class="card card-custom bg-white border-white border-0">
+        <div class="card-custom-img"
+             style="background-image: url('/media/{{ service.images.all|first }}')"></div>
+        <div style="z-index: 1" class="card-custom-avatar d-flex align-items-end">
+            {% if service.confirmed %}
+                <img class="img-fluid"
+                     src="{% static 'img/check (1).png' %}" alt="Avatar">
+                &nbsp;
+            {% endif %}
+            <p class="h6 text-center">{{ service.location }}</p>
+        </div>
+        <div style="max-height: 212px" class="card-body bg-white position-relative">
+            <h6 style="font-weight: 600; padding-bottom: 10px">{{ service.title|truncatechars:80 }}</h6>
+            <p class="card-text" style="margin-bottom: 0">
+                {{ service.description|truncatechars:120 }}
+            </p>
+            <p class="card-text"><small class="text-muted">{{ order.category }}</small></p>
+            <div style="bottom: 10px"
+                 class="position-absolute text-muted bg-transparent flex flex-column align-items-center">
+                <p>Возраст: {{ service.age }}</p>
+                <p>Рост: {{ service.height }}</p>
+            </div>
+            <div style="bottom: 10px; right: 1.5rem;"
+                 class="position-absolute text-muted bg-transparent flex flex-column align-items-center">
+                <p>Вес: {{ service.weight }}</p>
+                <p>
+                    <Грудь></Грудь>
+                    : {{ service.size }}</p>
+            </div>
+        </div>
+        <div class="card-footer text-center d-flex flex-column"
+             style="background: inherit; border-color: inherit;">
+            <div class="flex justify-content-between text-center">
+                <p>За час:</p>
+                <p> {% if service.price_one_hour %}
+                    {{ service.price_one_hour }}
+                {% else %}
+                    <span><strong>&#8211;</strong></span>
+                {% endif %}
+                </p>
+            </div>
+            <div class="flex justify-content-between text-center">
+                <p>За два часа:</p>
+                <p> {% if service.price_two_hours %}
+                    {{ service.price_two_hours }}
+                {% else %}
+                    <span><strong>&#8211;</strong></span>
+                {% endif %}
+                </p>
+            </div>
+            <div class="flex justify-content-between text-center">
+                <p>За ночь:</p>
+                <p> {% if service.price_full %}
+                    {{ service.price_full }}
+                {% else %}
+                    <span><strong>&#8211;</strong></span>
+                {% endif %}
+                </p>
+            </div>
+            <small class="text-muted">
+                {% if order.tags.all %}
+                    Теги:
+                    {% for tag in order.tags.all %}
+                        {{ tag }};
+                    {% endfor %}
+                {% endif %}
+            </small>
+        </div>
+        <a href="{{ service.get_absolute_url }}" class="stretched-link"></a>
+    </div>
+{% endblock %}

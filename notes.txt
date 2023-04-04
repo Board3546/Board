@@ -1,0 +1,15 @@
+Выполнено: Отзывы, избранные, оплаченные тарифы, фильтр, поднятие анкет, создание, редактирование анкет, проверочные фото, тех поддержка, жду звонка, inactive service for few days,
+
+Нужно сделать: история операций, header,
+
+Доделать: плеер с фото, оценка в отзывах, Meta в моделях и админке, поля в анкете (экспресс, choices), фильтр
+
+on deploy: create OnTopPrice instance, additions, celery
+
+где должна быть кнопка поднять анкеты
+
+
+Celery:
+celery -A Board worker -l info -P eventlet
+celery -A Board beat -l info
+celery -A Board flower  --address=127.0.0.1 --port=5555

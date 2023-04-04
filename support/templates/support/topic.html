@@ -1,0 +1,13 @@
+{% extends 'support/base_support.html' %}
+
+{% block content %}
+    <div class="container ps-4 mt-5 pe-4 mb-5">
+        <h1 style="font-size: 32px; font-weight: 600; margin-bottom: 32px;" class="w-100 text-center">
+            {{ topic.topic }}
+        </h1>
+        <br>
+        {% autoescape off %}
+            {{ topic.description }}
+        {% endautoescape %}
+    </div>
+{% endblock %}

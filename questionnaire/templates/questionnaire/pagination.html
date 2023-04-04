@@ -1,0 +1,25 @@
+{% load order_pagination %}
+<nav class="{% if amount_of_pages == 1 %}hide{% endif %} mt-3 rounded-4 position-absolute bottom-0 start-50 translate-middle-x" aria-label="Page navigation example">
+    <ul class="pagination justify-content-center bg-transparent">
+        <li class="page-item  {% if not page_obj.has_previous %}disabled{% endif %}">
+            <a class="page-link {% if page_obj.has_previous %}link-warning{% endif %}"
+               href="{% if page_obj.has_previous %}{% pagination_url page_obj.previous_page_number 'page' request.GET.urlencode %}{% endif %}">Previous</a>
+        </li>
+
+        {% for page in page_range %}
+        <li class="page-item"><a style="{% if page == '…' %}.page-link:hover {background-color: transparent}{% endif %}"
+                                 class="page-link link-warning {% if page == page_obj.number %}active active-orange{% endif %} {% if page == '…' %}pagignore{% endif %}"
+                                 href="{% if page == '…' %}#{% else %}{% pagination_url page 'page' request.GET.urlencode %}{% endif %}">{{ page }}</a></li>
+        {% endfor %}
+
+
+        <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+            <a class="page-link {% if page_obj.has_next %}link-warning{% endif %}"
+               href="{% if page_obj.has_next %}{% pagination_url page_obj.next_page_number 'page' request.GET.urlencode %}{% endif %}">Next</a>
+        </li>
+    </ul>
+</nav>
+<script>
+    var mainContainer = document.querySelector('#main-container');
+    mainContainer.classList.add('position-relative');
+</script>
